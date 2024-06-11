@@ -13,9 +13,12 @@
             "Docker\\Tests\\": "tests/"
         }
     },
+    "replace": {
+        "docker-php/docker-php": "*"
+    },
     "require": {
         "php": ">=7.1",
-        "docker-php/docker-php-api": "dev-feature.php83",
+        "docker-php/docker-php-api": "^4.1.0",
         "guzzlehttp/psr7": "^1.2",
         "php-http/client-common": "^2.7",
         "php-http/socket-client": "^2.1.0",
@@ -42,7 +45,7 @@
     "repositories": [
         {
             "type": "vcs",
-            "url": "https://github.com/nexcess/docker-php-api"
+            "url": "https://github.com/nexcess/docker-php-docker-php-api"
         }
     ],
     "scripts": {
@@ -57,5 +60,10 @@
         }
     },
     "prefer-stable": true,
-    "minimum-stability": "dev"
+    "minimum-stability": "dev",
+    "config": {
+        "allow-plugins": {
+            "php-http/discovery": false
+        }
+    }
 }
