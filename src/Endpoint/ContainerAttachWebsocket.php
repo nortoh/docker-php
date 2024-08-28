@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Docker\Endpoint;
 
+use Docker\API\Client;
 use Docker\API\Endpoint\ContainerAttachWebsocket as BaseEndpoint;
 use Docker\Stream\AttachWebsocketStream;
-use Jane\OpenApiRuntime\Client\Client;
-use Jane\OpenApiRuntime\Client\Exception\InvalidFetchModeException;
+use Jane\Component\OpenApiRuntime\Client\Exception\InvalidFetchModeException;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 
@@ -32,7 +32,8 @@ class ContainerAttachWebsocket extends BaseEndpoint
                 return new AttachWebsocketStream($response->getBody());
             }
 
-            return $this->transformResponseBody((string) $response->getBody(), $response->getStatusCode(), $serializer);
+            $contentType = $response->hasHeader('Content-Type') ? current($response->getHeader('Content-Type')) : null;
+            return $this->transformResponseBody($response, $serializer, $contentType);
         }
 
         if (Client::FETCH_RESPONSE === $fetchMode) {

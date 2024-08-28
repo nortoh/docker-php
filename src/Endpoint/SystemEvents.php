@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace Docker\Endpoint;
 
 use Amp\Artax\Client as ArtaxClient;
+use Docker\API\Client;
 use Docker\API\Endpoint\SystemEvents as BaseEndpoint;
 use Docker\Client\AmpArtaxStreamEndpoint;
 use Docker\Client\AmpArtaxStreamEndpointTrait;
 use Docker\Client\ProvideAmpArtaxClientOptions;
 use Docker\Stream\EventStream;
-use Jane\OpenApiRuntime\Client\Client;
-use Jane\OpenApiRuntime\Client\Exception\InvalidFetchModeException;
+use Jane\Component\OpenApiRuntime\Client\Exception\InvalidFetchModeException;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 

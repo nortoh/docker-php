@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace Docker\Endpoint;
 
+use Docker\API\Client;
 use Docker\API\Endpoint\ImageBuild as BaseEndpoint;
 use Docker\Stream\BuildStream;
 use Docker\Stream\TarStream;
-use Jane\OpenApiRuntime\Client\Client;
-use Jane\OpenApiRuntime\Client\Exception\InvalidFetchModeException;
+use Jane\Component\OpenApiRuntime\Client\Exception\InvalidFetchModeException;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 
 class ImageBuild extends BaseEndpoint
 {
-    public function getBody(\Symfony\Component\Serializer\SerializerInterface $serializer, \Http\Message\StreamFactory $streamFactory = null): array
+    public function getBody(\Symfony\Component\Serializer\SerializerInterface $serializer, $streamFactory = null): array
     {
         $body = $this->body;
 
@@ -32,7 +32,8 @@ class ImageBuild extends BaseEndpoint
                 return new BuildStream($response->getBody(), $serializer);
             }
 
-            return $this->transformResponseBody((string) $response->getBody(), $response->getStatusCode(), $serializer);
+            $contentType = $response->hasHeader('Content-Type') ? current($response->getHeader('Content-Type')) : null;
+            return $this->transformResponseBody($response, $serializer, $contentType);
         }
 
         if (Client::FETCH_RESPONSE === $fetchMode) {
