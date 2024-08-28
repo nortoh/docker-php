@@ -7,7 +7,7 @@ namespace Docker\Client;
 use Amp\Artax\Response;
 use Amp\CancellationTokenSource;
 use Amp\Promise;
-use Jane\OpenApiRuntime\Client\Client;
+use Docker\API\Client;
 use Symfony\Component\Serializer\SerializerInterface;
 
 interface AmpArtaxStreamEndpoint
