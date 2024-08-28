@@ -9,11 +9,8 @@ use Http\Client\Common\Plugin\AddHostPlugin;
 use Http\Client\Common\Plugin\ContentLengthPlugin;
 use Http\Client\Common\Plugin\DecoderPlugin;
 use Http\Client\Common\PluginClientFactory;
-use Http\Client\HttpClient;
 use Http\Client\Socket\Client as SocketHttpClient;
-use Http\Message\MessageFactory\GuzzleMessageFactory;
-
-use Docker\API\Client as DockerClient;
+use Psr\Http\Client\ClientInterface;
 
 final class DockerClientFactory
 {
@@ -45,7 +42,7 @@ final class DockerClientFactory
         ]);
     }
 
-    public static function createFromEnv(PluginClientFactory $pluginClientFactory = null): HttpClient
+    public static function createFromEnv(PluginClientFactory $pluginClientFactory = null): ClientInterface
     {
         $options = [
             'remote_socket' => \getenv('DOCKER_HOST') ? \getenv('DOCKER_HOST') : 'unix:///var/run/docker.sock',
