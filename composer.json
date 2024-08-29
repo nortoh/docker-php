@@ -18,7 +18,7 @@
     },
     "require": {
         "php": ">=7.1",
-        "docker-php/docker-php-api": "^4.1.0",
+        "docker-php/docker-php-api": "dev-upgrades-for-jane-php",
         "guzzlehttp/psr7": "^1.2",
         "php-http/client-common": "^2.7",
         "php-http/socket-client": "^2.1.0",
@@ -26,7 +26,9 @@
         "symfony/filesystem": "^7.0",
         "symfony/process": "^7.0",
         "symfony/http-client": "7.0",
-        "psr/http-factory": "^1.0"
+        "psr/http-factory": "^1.0",
+        "psr/http-client": "^1.0",
+        "amphp/http-client": "^3.0"
     },
     "suggest": {
         "php-http/httplug-bundle": "For integration with Symfony",
@@ -35,7 +37,6 @@
     "require-dev": {
         "phpunit/phpunit": "^10.0",
         "friendsofphp/php-cs-fixer": "3.40.0",
-        "amphp/artax": "^3.0",
         "amphp/socket": "^0.10.5"
     },
     "conflict": {
@@ -45,7 +46,7 @@
     "repositories": [
         {
             "type": "vcs",
-            "url": "https://github.com/nexcess/docker-php-docker-php-api"
+            "url": "https://github.com/nortoh/docker-php-api"
         }
     ],
     "scripts": {
