@@ -12,7 +12,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 
 class MultiJsonStreamTest extends TestCase
 {
-    public function jsonStreamDataProvider()
+    public static function jsonStreamDataProvider()
     {
         return [
             [
@@ -40,18 +40,19 @@ class MultiJsonStreamTest extends TestCase
         $stream = new BufferStream();
         $stream->write($jsonStream);
 
-        $serializer = $this->getMockBuilder(SerializerInterface::class)
-            ->getMock();
+        $serializer = $this->getMockBuilder(SerializerInterface::class)->getMock();
 
         $serializer
             ->expects($this->exactly(\count($jsonParts)))
             ->method('deserialize')
-                ->withConsecutive(...\array_map(function ($part) {
+                ->willReturnOnConsecutiveCalls(...\array_map(function ($part) {
                     return [$part, BuildInfo::class, 'json', []];
                 }, $jsonParts))
         ;
 
-        $stub = $this->getMockForAbstractClass(MultiJsonStream::class, [$stream, $serializer]);
+        $stub = $this->getMockBuilder(MultiJsonStream::class)->setConstructorArgs([$stream, $serializer])->getMockForAbstractClass();
+
+        assert($stub instanceof MultiJsonStream);
         $stub->expects($this->any())
             ->method('getDecodeClass')
             ->willReturn('BuildInfo');

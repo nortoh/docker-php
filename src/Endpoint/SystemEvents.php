@@ -24,14 +24,15 @@ class SystemEvents extends BaseEndpoint implements ProvideAmpArtaxClientOptions,
         return [ArtaxClient::OP_TRANSFER_TIMEOUT => 0];
     }
 
-    public function parsePSR7Response(ResponseInterface $response, SerializerInterface $serializer, string $fetchMode = Client::FETCH_OBJECT)
+    public function parseResponse(ResponseInterface $response, SerializerInterface $serializer, string $fetchMode = Client::FETCH_OBJECT)
     {
         if (Client::FETCH_OBJECT === $fetchMode) {
             if (200 === $response->getStatusCode()) {
                 return new EventStream($response->getBody(), $serializer);
             }
 
-            return $this->transformResponseBody((string) $response->getBody(), $response->getStatusCode(), $serializer);
+            $contentType = $response->hasHeader('Content-Type') ? current($response->getHeader('Content-Type')) : null;
+            return $this->transformResponseBody($response, $serializer, $contentType);
         }
 
         if (Client::FETCH_RESPONSE === $fetchMode) {

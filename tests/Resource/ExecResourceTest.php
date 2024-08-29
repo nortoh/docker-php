@@ -38,6 +38,7 @@ class ExecResourceTest extends TestCase
 
         $stream = $this->getManager()->execStart($execCreateResult->getId(), $execStartConfig);
 
+        assert($stream instanceof DockerRawStream);
         $this->assertInstanceOf(DockerRawStream::class, $stream);
 
         $stdoutFull = '';

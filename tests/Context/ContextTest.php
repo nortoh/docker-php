@@ -7,6 +7,7 @@ namespace Docker\Tests\Context;
 use Docker\Context\Context;
 use Docker\Context\ContextBuilder;
 use Docker\Tests\TestCase;
+use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 
 class ContextTest extends TestCase
@@ -16,7 +17,7 @@ class ContextTest extends TestCase
         $directory = __DIR__.DIRECTORY_SEPARATOR.'context-test';
 
         $context = new Context($directory);
-        $process = new Process('/usr/bin/env tar c .', $directory);
+        $process = new Process(['/usr/bin/env', 'tar', 'c', '.'], $directory);
         $process->run();
 
         $this->assertSame(\strlen($process->getOutput()), \strlen($context->toTar()));
@@ -27,7 +28,7 @@ class ContextTest extends TestCase
         $directory = __DIR__.DIRECTORY_SEPARATOR.'context-test';
 
         $context = new Context($directory);
-        $this->assertInternalType('resource', $context->toStream());
+        $this->assertIsResource($context->toStream());
     }
 
     public function testDirectorySetter(): void
@@ -43,6 +44,7 @@ class ContextTest extends TestCase
      */
     public function testTarFailed(): void
     {
+        $this->expectException(ProcessFailedException::class);
         $directory = __DIR__.DIRECTORY_SEPARATOR.'context-test';
         $path = \getenv('PATH');
         \putenv('PATH=/');
@@ -62,6 +64,6 @@ class ContextTest extends TestCase
 
         unset($context);
 
-        $this->assertFileNotExists($file);
+        $this->assertFileDoesNotExist($file);
     }
 }

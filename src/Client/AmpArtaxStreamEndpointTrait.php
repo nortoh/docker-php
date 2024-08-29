@@ -15,7 +15,7 @@ use function Amp\call;
 
 trait AmpArtaxStreamEndpointTrait
 {
-    abstract protected function transformResponseBody(string $body, int $status, SerializerInterface $serializer);
+    abstract protected function transformResponseBody(\Psr\Http\Message\ResponseInterface $response, \Symfony\Component\Serializer\SerializerInterface $serializer, ?string $contentType = null);
 
     public function parseArtaxStreamResponse(
         Response $response,
@@ -31,7 +31,8 @@ trait AmpArtaxStreamEndpointTrait
             $responseTransformer = null;
             if (Client::FETCH_OBJECT === $fetchMode) {
                 $responseTransformer = function ($chunk) use ($response, $serializer) {
-                    return $this->transformResponseBody($chunk, $response->getStatus(), $serializer);
+                    $contentType = $response->hasHeader('Content-Type') ? $response->getHeader('Content-Type') : null;
+                    return $this->transformResponseBody($chunk, $serializer, $contentType);
                 };
             }
 

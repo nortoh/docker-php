@@ -6,6 +6,8 @@ namespace Docker\Tests;
 
 use Docker\DockerClientFactory;
 use Http\Client\HttpClient;
+use Psr\Http\Client\ClientInterface;
+use RuntimeException;
 
 class DockerClientFactoryTest extends TestCase
 {
@@ -17,7 +19,7 @@ class DockerClientFactoryTest extends TestCase
 
     public function testStaticConstructor(): void
     {
-        $this->assertInstanceOf(HttpClient::class, DockerClientFactory::create());
+        $this->assertInstanceOf(ClientInterface::class, DockerClientFactory::create());
     }
 
     /**
@@ -26,6 +28,8 @@ class DockerClientFactoryTest extends TestCase
      */
     public function testCreateFromEnvWithoutCertPath(): void
     {
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Connection to docker has been set to use TLS, but no PATH is defined for certificate in DOCKER_CERT_PATH docker environment variable');
         \putenv('DOCKER_TLS_VERIFY=1');
         DockerClientFactory::createFromEnv();
     }
@@ -37,7 +41,7 @@ class DockerClientFactoryTest extends TestCase
 
         $count = \count(\get_resources('stream-context'));
         $client = DockerClientFactory::createFromEnv();
-        $this->assertInstanceOf(HttpClient::class, $client);
+        $this->assertInstanceOf(ClientInterface::class, $client);
 
         $contexts = \get_resources('stream-context');
         $this->assertCount($count + 1, $contexts);
@@ -57,7 +61,7 @@ class DockerClientFactoryTest extends TestCase
 
         $count = \count(\get_resources('stream-context'));
         $client = DockerClientFactory::createFromEnv();
-        $this->assertInstanceOf(HttpClient::class, $client);
+        $this->assertInstanceOf(ClientInterface::class, $client);
 
         $contexts = \get_resources('stream-context');
         $this->assertCount($count + 1, $contexts);

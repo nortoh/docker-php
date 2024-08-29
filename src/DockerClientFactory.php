@@ -27,11 +27,7 @@ final class DockerClientFactory
 
         $pluginClientFactory = $pluginClientFactory ?? new PluginClientFactory();
 
-        $httpClient = new \Http\Client\Common\PluginClient(
-            \Http\Discovery\Psr18ClientDiscovery::find()
-        );
-
-        $socketClient = new SocketHttpClient($httpClient, $config);
+        $socketClient = new SocketHttpClient($config);
 
         return $pluginClientFactory->createClient($socketClient, [
             new ContentLengthPlugin(),

@@ -6,6 +6,7 @@ namespace Docker\Tests\Resource;
 
 use Docker\API\Model\ContainersCreatePostBody;
 use Docker\Docker;
+use Docker\Stream\AttachWebsocketStream;
 use Docker\Stream\DockerRawStream;
 use Docker\Tests\TestCase;
 
@@ -43,6 +44,9 @@ class ContainerResourceTest extends TestCase
             'stdout' => true,
         ]);
 
+        assert($dockerRawStream instanceof DockerRawStream);
+        $this->assertInstanceOf(DockerRawStream::class, $dockerRawStream);
+
         $stdoutFull = '';
         $dockerRawStream->onStdout(function ($stdout) use (&$stdoutFull): void {
             $stdoutFull .= $stdout;
@@ -76,7 +80,11 @@ class ContainerResourceTest extends TestCase
             'stdin' => true,
         ]);
 
+        assert($webSocketStream instanceof AttachWebsocketStream);
+        $this->assertInstanceOf(AttachWebsocketStream::class, $webSocketStream);
+
         $this->getManager()->containerStart($containerCreateResult->getId());
+        
 
         // Read the bash first line
         $webSocketStream->read();
@@ -94,7 +102,7 @@ class ContainerResourceTest extends TestCase
             $output .= $data;
         }
 
-        $this->assertContains('echo', $output);
+        $this->assertStringContainsString('echo', $output);
 
         // Exit the container
         $webSocketStream->write("exit\n");

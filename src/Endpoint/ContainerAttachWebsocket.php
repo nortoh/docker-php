@@ -25,7 +25,7 @@ class ContainerAttachWebsocket extends BaseEndpoint
         ]);
     }
 
-    public function parsePSR7Response(ResponseInterface $response, SerializerInterface $serializer, string $fetchMode = Client::FETCH_OBJECT)
+    public function parseResponse(ResponseInterface $response, SerializerInterface $serializer, string $fetchMode = Client::FETCH_OBJECT)
     {
         if (Client::FETCH_OBJECT === $fetchMode) {
             if (101 === $response->getStatusCode()) {

@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Docker\Tests\Resource;
 
 use Docker\API\Model\EventsGetResponse200;
+use Docker\Stream\CallbackStream;
+use Docker\Stream\EventStream;
 use Docker\Tests\TestCase;
 
 class SystemResourceTest extends TestCase
@@ -19,10 +21,14 @@ class SystemResourceTest extends TestCase
 
     public function testGetEvents(): void
     {
+
         $stream = $this->getManager()->systemEvents([
             'since' => (string) (\time() - 1),
             'until' => (string) (\time() + 4),
         ]);
+
+        assert($stream instanceof EventStream);
+        $this->assertInstanceOf(EventStream::class, $stream);
 
         $lastEvent = null;
 

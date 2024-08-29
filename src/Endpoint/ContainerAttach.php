@@ -13,7 +13,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 
 class ContainerAttach extends BaseEndpoint
 {
-    public function parsePSR7Response(ResponseInterface $response, SerializerInterface $serializer, string $fetchMode = Client::FETCH_OBJECT)
+    public function parseResponse(ResponseInterface $response, SerializerInterface $serializer, string $fetchMode = Client::FETCH_OBJECT)
     {
         if (Client::FETCH_OBJECT === $fetchMode) {
             if (200 === $response->getStatusCode() && DockerRawStream::HEADER === $response->getHeaderLine('Content-Type')) {

@@ -7,6 +7,9 @@ namespace Docker\Tests\Resource;
 use Docker\API\Client;
 use Docker\API\Model\AuthConfig;
 use Docker\Context\ContextBuilder;
+use Docker\Stream\BuildStream;
+use Docker\Stream\CreateImageStream;
+use Docker\Stream\PushStream;
 use Docker\Tests\TestCase;
 
 class ImageResourceTest extends TestCase
@@ -28,7 +31,8 @@ class ImageResourceTest extends TestCase
         $context = $contextBuilder->getContext();
         $buildStream = $this->getManager()->imageBuild($context->read(), ['t' => 'test-image']);
 
-        $this->assertInstanceOf('Docker\Stream\BuildStream', $buildStream);
+        assert($buildStream instanceof BuildStream);
+        $this->assertInstanceOf(BuildStream::class, $buildStream);
 
         $lastMessage = '';
 
@@ -37,7 +41,7 @@ class ImageResourceTest extends TestCase
         });
         $buildStream->wait();
 
-        $this->assertContains('Successfully', $lastMessage);
+        $this->assertStringContainsString('Successfully', $lastMessage);
     }
 
     public function testCreate(): void
@@ -46,7 +50,8 @@ class ImageResourceTest extends TestCase
             'fromImage' => 'registry:latest',
         ]);
 
-        $this->assertInstanceOf('Docker\Stream\CreateImageStream', $createImageStream);
+        assert($createImageStream instanceof CreateImageStream);
+        $this->assertInstanceOf(CreateImageStream::class, $createImageStream);
 
         $firstMessage = null;
 
@@ -57,7 +62,7 @@ class ImageResourceTest extends TestCase
         });
         $createImageStream->wait();
 
-        $this->assertContains('Pulling from library/registry', $firstMessage);
+        $this->assertStringContainsString('Pulling from library/registry', $firstMessage ?? '');
     }
 
     public function testPushStream(): void
@@ -75,7 +80,8 @@ class ImageResourceTest extends TestCase
             'X-Registry-Auth' => $registryConfig,
         ]);
 
-        $this->assertInstanceOf('Docker\Stream\PushStream', $pushImageStream);
+        assert($pushImageStream instanceof PushStream);
+        $this->assertInstanceOf(PushStream::class, $pushImageStream);
 
         $firstMessage = null;
 
@@ -86,6 +92,6 @@ class ImageResourceTest extends TestCase
         });
         $pushImageStream->wait();
 
-        $this->assertContains('repository [localhost:5000/test-image]', $firstMessage);
+        $this->assertStringContainsString('repository [localhost:5000/test-image]', $firstMessage ?? '');
     }
 }
